@@ -1,8 +1,11 @@
 import javax.swing.*;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 
 
@@ -18,6 +21,7 @@ public class HotelGUI extends JFrame {
     private JButton manageHotelButton;
     private JButton simulateBookingButton;
     private JButton changeRatesButton;
+    private JButton hotelListButton;
     private JButton exitButton;
     private JTextField hotelNameField;
     private JTextField roomsInputField;
@@ -53,6 +57,7 @@ public class HotelGUI extends JFrame {
         manageHotelButton = new JButton("Manage Hotel");
         changeRatesButton = new JButton("Change Rates");
         simulateBookingButton = new JButton("Simulate Booking");
+        hotelListButton = new JButton("View Hotel List");
         exitButton = new JButton("Exit");
 
         // Set preferred size for buttons
@@ -62,6 +67,7 @@ public class HotelGUI extends JFrame {
         manageHotelButton.setPreferredSize(buttonSize);
         changeRatesButton.setPreferredSize(buttonSize);
         simulateBookingButton.setPreferredSize(buttonSize);
+        hotelListButton.setPreferredSize(buttonSize);
         exitButton.setPreferredSize(buttonSize);
 
         // Create and set up the north panel with a welcome message
@@ -87,6 +93,7 @@ public class HotelGUI extends JFrame {
         buttonPanel.add(manageHotelButton);
         buttonPanel.add(changeRatesButton);
         buttonPanel.add(simulateBookingButton);
+        buttonPanel.add(hotelListButton);
         buttonPanel.add(exitButton);
 
         centerPanel.add(buttonPanel, gbc);
@@ -108,6 +115,7 @@ public class HotelGUI extends JFrame {
         manageHotelButton.addActionListener(listener);
         changeRatesButton.addActionListener(listener);
         simulateBookingButton.addActionListener(listener);
+        hotelListButton.addActionListener(listener);
         exitButton.addActionListener(listener);
     }
 
@@ -1479,6 +1487,82 @@ public class HotelGUI extends JFrame {
         revalidate();
         repaint();
     }
+    
+
+    /**
+     * Displays the list of hotels created.
+     */
+    public void displayHotelList() {
+        // Define column names for the table
+        String[] columnNames = {"Hotel Name"};
+
+        // Retrieve the list of hotel names from the controller
+        ArrayList<String> hotelNames = controller.handleHotelList();
+
+        // Exit the method if there are no hotel names
+        if (hotelNames == null || hotelNames.isEmpty()) {
+            // Optionally display a message indicating no hotels found
+            // displayMessage("No hotels found.");
+            return;
+        }
+
+        // Convert ArrayList<String> to a 2D Object array
+        Object[][] data = new Object[hotelNames.size()][1];
+        for (int i = 0; i < hotelNames.size(); i++) {
+            data[i][0] = hotelNames.get(i);
+        }
+
+        // Create a table model with the data and column names, making cells non-editable
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+        JTable hotelTable = new JTable(tableModel);
+
+        // Set the font for the table header and cells
+        Font headerFont = new Font("Arial", Font.BOLD, 24); // Increased font size for headers
+        Font cellFont = new Font("Arial", Font.PLAIN, 18); // Font size for cells
+
+        // Center-align the column header and set font
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) hotelTable.getTableHeader().getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        headerRenderer.setFont(headerFont);
+
+        // Center-align the cells in the "Hotel Name" column and set font
+        DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+        cellRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        cellRenderer.setFont(cellFont);
+        hotelTable.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
+
+        // Create a scroll pane to make the table scrollable
+        JScrollPane scrollPane = new JScrollPane(hotelTable);
+        hotelTable.setFillsViewportHeight(true); // Ensure the table fills the viewport
+
+        // Create a panel to hold the table and add the scroll pane to the panel
+        JPanel tablePanel = new JPanel(new BorderLayout());
+        tablePanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Create a button panel with an OK button to go back to the main menu
+        JPanel buttonPanel = new JPanel();
+        JButton okButton = new JButton("OK");
+        buttonPanel.add(okButton);
+
+        okButton.addActionListener(e -> switchToMainPanel()); // OK button action
+
+        // Create a full panel to hold the table panel and button panel
+        JPanel fullPanel = new JPanel(new BorderLayout());
+        fullPanel.add(tablePanel, BorderLayout.CENTER);
+        fullPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Replace the current panel with the new panel
+        getContentPane().removeAll();
+        getContentPane().add(fullPanel);
+        revalidate();
+        repaint();
+    }
+
 
 
 
@@ -1585,6 +1669,15 @@ public class HotelGUI extends JFrame {
      */
     public JButton getSimulateBookingButton() {
         return simulateBookingButton;
+    }
+    
+    /**
+     * Returns the button used to display hotel list.
+     * 
+     * @return The JButton used to display hotel list.
+     */
+    public JButton getDisplayHotelListButton() { 	
+    		return hotelListButton;
     }
 
     

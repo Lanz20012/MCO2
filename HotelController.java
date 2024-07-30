@@ -1,5 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -46,6 +48,8 @@ public class HotelController implements ActionListener, DocumentListener {
             view.displaySimulateBookingDialog();
         } else if (source == view.getChangeRatesButton()) {
             view.displayChangeRates();
+        } else if (source == view.getDisplayHotelListButton()) { // Add this block for displaying hotel list
+            view.displayHotelList();
         } else if (source == view.getExitButton()) {
             System.exit(0);
         }
@@ -192,6 +196,7 @@ public class HotelController implements ActionListener, DocumentListener {
                 
                 message.append("Price per Night: ").append(String.format("%.2f", room.getPrice())).append("\n");
 
+                
                 
                 for (int i = 0; i < 31; i++) {
                     if (room.getAvailabilityDay(i + 1)) {
@@ -582,5 +587,33 @@ public class HotelController implements ActionListener, DocumentListener {
 				view.displayMessage("Please enter a valid hotel name.");
 		}
 	}
+	
+	
+	/**
+	 * Handles the retrieval and display of hotel names.
+	 * 
+	 * This method obtains a list of hotel names.
+	 * It checks if the list is null or empty. If so, it displays a message to the user indicating that
+	 * no hotels are found and returns null. Otherwise, it returns the list of hotel names.
+	 * 
+	 * @return An ArrayList of Strings containing hotel names if available, or null if no hotels are found.
+	 */
+	public ArrayList<String> handleHotelList() {
+	    // Assuming model.displayHotelList() returns an ArrayList<String>
+	   
+	    
+	    // Check if the list is null or empty
+	    if (model.displayHotelList() == null || model.displayHotelList().isEmpty()) {
+	        view.displayMessage("No hotels found.");
+	        return null; // Return an empty list if no hotels are found
+	    } else {
+	        // Return the list of hotel names
+	        return model.displayHotelList();
+	    }
+	}
+
+
+
+
 
 }

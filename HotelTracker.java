@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class HotelTracker {
     private ArrayList<Hotel> hotels;
+    private ArrayList<String> hotelNames = new ArrayList<>();
 
     
     /**
@@ -594,6 +595,34 @@ public class HotelTracker {
         }
         
         
+    }
+    
+    
+    /**
+     * Retrieves and returns a list of hotel names.
+     * 
+     * This method iterates through the list of Hotel objects and collects the names of hotels 
+     * from their high-level information. It first clears the existing list of hotel names to avoid 
+     * duplicates if the method is called multiple times. If no hotel names are found, it returns null. 
+     * Otherwise, it returns the list of hotel names.
+     * 
+     * @return An ArrayList of Strings containing the names of hotels. Returns null if no hotel names are found.
+     */
+    public ArrayList<String> displayHotelList() {
+        hotelNames.clear(); // Clear the list to avoid duplicates if the method is called multiple times
+        
+        for (Hotel hotel : hotels) {
+            String hotelName = hotel.getHighLevelInfo().getHotelName();
+            if (hotelName != null) {
+                hotelNames.add(hotelName);
+            }
+        }
+
+        if (hotelNames.isEmpty()) {
+            return null; // Return null if no hotel names were added to the list
+        }
+
+        return hotelNames; // Return the list of hotel names
     }
 
     /*
